@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+  width: 100%; height: 100%;
+  background: radial-gradient(ellipse at center, #001530 0%, #000008 100%);
+  overflow: hidden;
+  font-family: 'Consolas', 'D2Coding', 'Courier New', monospace;
+  color: #00D4FF;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* === 평소 빨간 아크 리액터 === */
+.reactor {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ff5050 0%, #aa0000 60%, #400000 100%);
+  box-shadow:
+    0 0 18px #ff3030,
+    0 0 36px rgba(255, 60, 60, 0.5),
+    inset 0 0 12px #ff8080;
+  display: none;
+  animation: reactor-pulse 2.4s ease-in-out infinite;
+}
+.reactor::before {
+  content: '';
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+  border: 1.5px solid #ff5050;
+  box-shadow: 0 0 8px #ff5050;
+}
+.reactor::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 70%; height: 70%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border-top: 1px solid rgba(255, 180, 180, 0.7);
+  border-bottom: 1px solid rgba(255, 180, 180, 0.7);
+  box-shadow: 0 0 4px rgba(255, 100, 100, 0.6);
+}
+@keyframes reactor-pulse {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; box-shadow: 0 0 24px #ff3030, 0 0 48px rgba(255, 60, 60, 0.7), inset 0 0 16px #ff8080; }
+}
+
+/* === idle 모드: 빨간 리액터만 === */
+body.idle {
+  background: #000000;
+}
+body.idle .reactor { display: block; }
+body.idle #stage { display: none; }
+body:not(.idle) .reactor { display: none; }
+
+#stage {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.7);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  pointer-events: none;
+}
+
+#stage.show {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* 원형 코어 */
+.core {
+  position: absolute;
+  width: 220px; height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle at center,
+    rgba(0, 50, 100, 0.55) 0%,
+    rgba(0, 20, 60, 0.85) 60%,
+    rgba(0, 0, 20, 0.95) 100%);
+  box-shadow:
+    0 0 60px rgba(0, 212, 255, 0.55),
+    inset 0 0 40px rgba(0, 212, 255, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+/* 회전 링 */
+.ring {
+  position: absolute;
+  border-radius: 50%;
+  border-style: solid;
+  border-color: transparent;
+  pointer-events: none;
+}
+.ring.r1 {
+  width: 260px; height: 260px;
+  border-width: 2px;
+  border-top-color: #00D4FF;
+  border-right-color: rgba(0, 212, 255, 0.3);
+  animation: spin 3s linear infinite;
+  filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.7));
+}
+.ring.r2 {
+  width: 290px; height: 290px;
+  border-width: 1px;
+  border-top-color: rgba(0, 212, 255, 0.4);
+  border-bottom-color: #00D4FF;
+  animation: spin 5s linear infinite reverse;
+}
+.ring.r3 {
+  width: 240px; height: 240px;
+  border-width: 1px;
+  border-left-color: rgba(0, 212, 255, 0.6);
+  animation: spin 4s linear infinite;
+  opacity: 0.6;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 중앙 마이크 */
+.mic {
+  font-size: 56px;
+  filter: drop-shadow(0 0 14px #00D4FF);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.55; transform: scale(1.12); }
+}
+
+/* 상태 라벨 */
+.status {
+  margin-top: 14px;
+  font-size: 13px;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: #00D4FF;
+  text-shadow: 0 0 8px rgba(0, 212, 255, 0.8);
+}
+
+/* 인식 텍스트 */
+.text {
+  margin-top: 6px;
+  font-size: 12px;
+  max-width: 180px;
+  text-align: center;
+  color: #ffffff;
+  min-height: 16px;
+  line-height: 1.4;
+  word-break: keep-all;
+}
+
+/* 외곽 도트 */
+.dot {
+  position: absolute;
+  width: 6px; height: 6px;
+  background: #00D4FF;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #00D4FF;
+}
+.dot.d1 { top: 40px; left: 50%; transform: translateX(-50%); }
+.dot.d2 { bottom: 40px; left: 50%; transform: translateX(-50%); }
+.dot.d3 { left: 40px; top: 50%; transform: translateY(-50%); }
+.dot.d4 { right: 40px; top: 50%; transform: translateY(-50%); }
+
+/* 상태별 색상 */
+#stage.error .core,
+#stage.error .ring.r1,
+#stage.error .dot {
+  border-color: #FF3344;
+  box-shadow: 0 0 60px rgba(255, 51, 68, 0.55),
+              inset 0 0 40px rgba(255, 51, 68, 0.35);
+  background: #FF3344;
+}
+#stage.error .status,
+#stage.error .mic { color: #FF6677; filter: drop-shadow(0 0 14px #FF3344); }
+
+#stage.success .core { box-shadow: 0 0 60px rgba(0, 255, 150, 0.6), inset 0 0 40px rgba(0, 255, 150, 0.4); }
+#stage.success .status { color: #00FF99; text-shadow: 0 0 8px #00FF99; }
+</style>
+</head>
+<body class="idle">
+<div class="reactor"></div>
+<div id="stage">
+  <div class="ring r2"></div>
+  <div class="ring r1"></div>
+  <div class="ring r3"></div>
+  <div class="dot d1"></div>
+  <div class="dot d2"></div>
+  <div class="dot d3"></div>
+  <div class="dot d4"></div>
+  <div class="core">
+    <div class="mic">🎙</div>
+    <div class="status" id="status">대기</div>
+    <div class="text" id="text"></div>
+  </div>
+</div>
+
+<script>
+let hideTimer = null;
+function setState(state, text) {
+  const stage = document.getElementById('stage');
+  const status = document.getElementById('status');
+  const txt = document.getElementById('text');
+  stage.classList.remove('error', 'success');
+
+  if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+
+  document.body.classList.remove('idle');
+  if (state === 'idle') {
+    stage.classList.remove('show');
+    document.body.classList.add('idle');
+    return;
+  }
+  stage.classList.add('show');
+  document.body.classList.remove('idle');
+  if (state === 'listening') {
+    status.textContent = '듣는 중';
+    txt.textContent = '';
+  } else if (state === 'processing') {
+    status.textContent = '인식 중';
+  } else if (state === 'result') {
+    stage.classList.add('success');
+    status.textContent = '실행';
+    txt.textContent = text || '';
+    hideTimer = setTimeout(() => {
+      stage.classList.remove('show', 'success');
+    }, 2200);
+  } else if (state === 'error') {
+    stage.classList.add('error');
+    status.textContent = '오류';
+    txt.textContent = text || '';
+    hideTimer = setTimeout(() => {
+      stage.classList.remove('show', 'error');
+    }, 2500);
+  }
+}
+window.setState = setState;
+</script>
+</body>
+</html>

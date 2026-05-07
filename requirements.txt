@@ -1,0 +1,5 @@
+pywebview>=4.4
+pyautogui>=0.9.54
+pyperclip>=1.8.2
+SpeechRecognition>=3.10.0
+PyAudio>=0.2.14
