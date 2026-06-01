@@ -25,11 +25,11 @@
 ### 1. 저장소 받기
 
 ```bash
-git clone https://github.com/ai-team-lead/jarvis-with-claude-code.git
+git clone https://github.com/smaction04/jarvis-with-claude-code.git
 cd jarvis-with-claude-code
 ```
 
-또는 [ZIP 다운로드](https://github.com/ai-team-lead/jarvis-with-claude-code/archive/refs/heads/main.zip) 후 압축 해제.
+또는 [ZIP 다운로드](https://github.com/smaction04/jarvis-with-claude-code/archive/refs/heads/main.zip) 후 압축 해제.
 
 ### 2. Python 3.10+ 의존성 설치
 
